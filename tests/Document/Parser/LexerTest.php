@@ -1,6 +1,6 @@
 <?php
 
-namespace Document\Parser;
+namespace Test\Document\Parser;
 
 use Exception;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 use Stravigor\Novelist\Document\Parser\Lexer;
 use Stravigor\Novelist\Document\Parser\TokenType;
+use Stravigor\Novelist\Document\Stream\StringInputStream;
 
 class LexerTest extends TestCase
 {
@@ -19,7 +20,7 @@ class LexerTest extends TestCase
     #[TestDox('Test cursor position')]
     public function cursorPosition(): void
     {
-        $lexer = new Lexer('{}');
+        $lexer = new Lexer(new StringInputStream('{}'));
         $actual = $lexer->current();
         $expected = '{';
         $this->assertEquals($expected, $actual);
@@ -33,7 +34,7 @@ class LexerTest extends TestCase
     #[DataProvider('dataProvider')]
     public function getNextToken($input, $expected)
     {
-        $lexer = new Lexer($input);
+        $lexer = new Lexer(new StringInputStream($input));
         $actual = $lexer->getNextToken();
         $this->assertEquals($expected, $actual->getType());
     }

@@ -2,7 +2,8 @@
 
 namespace Stravigor\Novelist\Document\Parser;
 
-use Exception;
+use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
+use Stravigor\Novelist\Document\Stream\InputStreamInterface;
 
 final class Lexer
 {
@@ -17,27 +18,30 @@ final class Lexer
     private int $cursorPosition;
 
     /**
-     * @var string
+     * @var InputStreamInterface
      */
-    private string $documentContent;
+    private InputStreamInterface $inputStream;
+
+    private string $currentBuffer;
 
     /**
-     * @param string $documentContent
+     * @param InputStreamInterface $inputStream
      */
-    public function __construct(string $documentContent)
+    public function __construct(InputStreamInterface $inputStream)
     {
-        $this->documentContent = $documentContent;
-        $this->length = mb_strlen($this->documentContent);
+        $this->inputStream = $inputStream;
+        $this->currentBuffer = $this->inputStream->read();
+        $this->length = mb_strlen($this->currentBuffer);
         $this->cursorPosition = 0;
     }
 
     public function current(): string
     {
-        return mb_substr($this->documentContent, $this->cursorPosition, 1);
+        return mb_substr($this->currentBuffer, $this->cursorPosition, 1);
     }
 
     /**
-     * @throws Exception
+     * @throws InvalidTokenException
      */
     public function getNextToken(): Token
     {
@@ -68,7 +72,12 @@ final class Lexer
     private function consume(): ?string
     {
         if ($this->length <= $this->cursorPosition) {
-            return null;
+            if ($this->inputStream->isEndOfStream()) {
+                return null;
+            }
+            $this->currentBuffer = $this->inputStream->read();
+            $this->length = mb_strlen($this->currentBuffer);
+            $this->cursorPosition = 0;
         }
 
         $ch = $this->current();
@@ -83,14 +92,14 @@ final class Lexer
     }
 
     /**
-     * @throws Exception
+     * @throws InvalidTokenException
      */
     private function getStringToken(): Token
     {
         $str = '';
 
         // Check if it's an nowdoc
-        $next = mb_substr($this->documentContent, $this->cursorPosition, 2);
+        $next = mb_substr($this->currentBuffer, $this->cursorPosition, 2);
         $isNowDoc = ($next == '""');
         if($isNowDoc) {
             $this->cursorPosition += 2;
@@ -100,7 +109,7 @@ final class Lexer
             $ch = $this->consume();
 
             if($isNowDoc) {
-                $next = mb_substr($this->documentContent, $this->cursorPosition, 2);
+                $next = mb_substr($this->currentBuffer, $this->cursorPosition, 2);
                 $isEndOfString = ($next == '""');
                 if($isEndOfString) {
                     $this->cursorPosition += 3;
@@ -133,21 +142,21 @@ final class Lexer
             };
         }
 
-        throw new Exception('No end of string');
+        throw new InvalidTokenException('No end of string');
     }
 
     /**
-     * @throws Exception
+     * @throws InvalidTokenException
      */
     private function getEmbeddedSourceToken(): Token
     {
         $str = '';
 
         // Check if it's an nowdoc
-        $next = mb_substr($this->documentContent, $this->cursorPosition, 2);
+        $next = mb_substr($this->currentBuffer, $this->cursorPosition, 2);
         $isEmbedded = ($next == '``');
         if(!$isEmbedded) {
-            throw new Exception('');
+            throw new InvalidTokenException('Invalid embedded token');
         }
         $this->cursorPosition += 2;
 
@@ -164,7 +173,7 @@ final class Lexer
             $isEndOfString = false;
 
             if($ch == '`') {
-                $next = mb_substr($this->documentContent, $this->cursorPosition, 2);
+                $next = mb_substr($this->currentBuffer, $this->cursorPosition, 2);
                 $isEndOfString = ($next == '``');
                 if($isEndOfString) {
                     $this->cursorPosition += 3;
@@ -180,12 +189,9 @@ final class Lexer
             }
         }
 
-        throw new Exception('No end of string');
+        throw new InvalidTokenException('No end of string');
     }
 
-    /**
-     * @throws Exception
-     */
     private function getIdentifierOrLiteralToken(string $str): Token
     {
         while (true) {
@@ -216,7 +222,6 @@ final class Lexer
 
     /**
      * @return Token
-     * @throws Exception
      */
     private function getCommentToken(): Token
     {
