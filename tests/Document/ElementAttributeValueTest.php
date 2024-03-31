@@ -6,11 +6,11 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Stravigor\Novelist\Document\ElementAttributeValue;
-use Stravigor\Novelist\Document\Exceptions\InvalidElementAttributeValueException;
-use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
-use Stravigor\Novelist\Document\Parser\Lexer;
-use Stravigor\Novelist\Document\Stream\StringInputStream;
+use Novelist\Document\ElementAttributeValue;
+use Novelist\Document\Exceptions\InvalidElementAttributeValueException;
+use Novelist\Document\Exceptions\InvalidTokenException;
+use Novelist\Document\Parser\Lexer;
+use Novelist\Document\Stream\StringInputStream;
 use Test\Document\DataProviders\ElementAttributeValueProvider;
 
 class ElementAttributeValueTest extends TestCase

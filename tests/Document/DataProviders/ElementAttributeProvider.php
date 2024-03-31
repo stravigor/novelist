@@ -2,8 +2,8 @@
 
 namespace Test\Document\DataProviders;
 
-use Stravigor\Novelist\Document\Exceptions\InvalidElementAttributeValueException;
-use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
+use Novelist\Document\Exceptions\InvalidElementAttributeValueException;
+use Novelist\Document\Exceptions\InvalidTokenException;
 
 final class ElementAttributeProvider
 {

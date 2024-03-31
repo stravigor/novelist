@@ -2,7 +2,7 @@
 
 namespace Test\Document\DataProviders;
 
-use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
+use Novelist\Document\Exceptions\InvalidTokenException;
 
 class ElementProvider
 {

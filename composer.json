@@ -4,6 +4,7 @@
     "type": "library",
     "require": {
         "php": "^8.2",
+        "laravel/framework": "^11.0",
         "ext-mbstring": "*"
     },
     "require-dev": {
@@ -12,7 +13,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Stravigor\\Novelist\\": "src/",
+            "Novelist\\": "src/",
             "Test\\": "tests/"
         }
     },

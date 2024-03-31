@@ -2,16 +2,16 @@
 /*
  * This file is part of Stravigor Novelist, a PHP library for generating Laravel applications based on specifications.
  *
- * @package     Stravigor\Novelist
+ * @package     Novelist
  * @author      Liva Ramarolahy <lr@stravigor.com>
  * @link        https://github.com/stravigor/novelist
  * @license     MIT License (https://opensource.org/licenses/MIT)
  */
 
-namespace Stravigor\Novelist\Document\Parser;
+namespace Novelist\Document\Parser;
 
-use Stravigor\Novelist\Document\Exceptions\InvalidElementAttributeValueException;
-use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
+use Novelist\Document\Exceptions\InvalidElementAttributeValueException;
+use Novelist\Document\Exceptions\InvalidTokenException;
 
 /**
  * The ParserHelper trait provides helper methods for token parsing.

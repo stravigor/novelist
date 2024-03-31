@@ -2,7 +2,7 @@
 
 namespace Test\Document\DataProviders;
 
-use Stravigor\Novelist\Document\Parser\TokenType;
+use Novelist\Document\Parser\TokenType;
 
 class TokenProvider
 {

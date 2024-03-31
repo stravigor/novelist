@@ -2,21 +2,21 @@
 /*
  * This file is part of Stravigor Novelist, a PHP library for generating Laravel applications based on specifications.
  *
- * @package     Stravigor\Novelist
+ * @package     Novelist
  * @author      Liva Ramarolahy <lr@stravigor.com>
  * @link        https://github.com/stravigor/novelist
  * @license     MIT License (https://opensource.org/licenses/MIT)
  */
 
-namespace Stravigor\Novelist\Document;
+namespace Novelist\Document;
 
-use Stravigor\Novelist\Document\Exceptions\InvalidElementAttributeValueException;
-use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
-use Stravigor\Novelist\Document\Parser\Lexer;
-use Stravigor\Novelist\Document\Parser\ParserHelper;
-use Stravigor\Novelist\Document\Parser\ParserInterface;
-use Stravigor\Novelist\Document\Parser\Token;
-use Stravigor\Novelist\Document\Parser\TokenType;
+use Novelist\Document\Exceptions\InvalidElementAttributeValueException;
+use Novelist\Document\Exceptions\InvalidTokenException;
+use Novelist\Document\Parser\Lexer;
+use Novelist\Document\Parser\ParserHelper;
+use Novelist\Document\Parser\ParserInterface;
+use Novelist\Document\Parser\Token;
+use Novelist\Document\Parser\TokenType;
 
 class ElementAttributeValue implements ParserInterface
 {

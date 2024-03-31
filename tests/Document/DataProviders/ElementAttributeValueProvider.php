@@ -2,7 +2,7 @@
 
 namespace Test\Document\DataProviders;
 
-use Stravigor\Novelist\Document\Exceptions\InvalidElementAttributeValueException;
+use Novelist\Document\Exceptions\InvalidElementAttributeValueException;
 
 
 /**

@@ -8,9 +8,9 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
-use Stravigor\Novelist\Document\Parser\Lexer;
-use Stravigor\Novelist\Document\Parser\TokenType;
-use Stravigor\Novelist\Document\Stream\StringInputStream;
+use Novelist\Document\Parser\Lexer;
+use Novelist\Document\Parser\TokenType;
+use Novelist\Document\Stream\StringInputStream;
 use Test\Document\DataProviders\TokenProvider;
 
 class LexerTest extends TestCase
