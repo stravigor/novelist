@@ -5,27 +5,35 @@ namespace Stravigor\Novelist\Document\Parser;
 use Stravigor\Novelist\Document\Exceptions\InvalidTokenException;
 use Stravigor\Novelist\Document\Stream\InputStreamInterface;
 
+/**
+ * The Lexer class tokenizes input strings into tokens.
+ */
 final class Lexer
 {
     /**
-     * @var int
+     * @var int The length of the current buffer.
      */
     private int $length;
 
     /**
-     * @var int
+     * @var int The current cursor position.
      */
     private int $cursorPosition;
 
     /**
-     * @var InputStreamInterface
+     * @var InputStreamInterface The input stream to tokenize.
      */
     private InputStreamInterface $inputStream;
 
+    /**
+     * @var string The current buffer being tokenized.
+     */
     private string $currentBuffer;
 
     /**
-     * @param InputStreamInterface $inputStream
+     * Constructs a new Lexer instance.
+     *
+     * @param InputStreamInterface $inputStream The input stream to tokenize.
      */
     public function __construct(InputStreamInterface $inputStream)
     {
@@ -35,13 +43,21 @@ final class Lexer
         $this->cursorPosition = 0;
     }
 
+    /**
+     * Retrieves the current character being processed.
+     *
+     * @return string The current character.
+     */
     public function current(): string
     {
         return mb_substr($this->currentBuffer, $this->cursorPosition, 1);
     }
 
     /**
-     * @throws InvalidTokenException
+     * Retrieves the next token from the input stream.
+     *
+     * @throws InvalidTokenException If an invalid token is encountered.
+     * @return Token The next token.
      */
     public function getNextToken(): Token
     {
@@ -69,6 +85,11 @@ final class Lexer
         };
     }
 
+    /**
+     * Consumes the next character from the input stream.
+     *
+     * @return string|null The consumed character, or null if the end of the stream is reached.
+     */
     private function consume(): ?string
     {
         if ($this->length <= $this->cursorPosition) {
@@ -86,13 +107,22 @@ final class Lexer
         return $ch;
     }
 
+    /**
+     * Determines if the given character should be skipped during tokenization.
+     *
+     * @param string|null $ch The character to check.
+     * @return bool True if the character should be skipped, false otherwise.
+     */
     private function isSkipCharacter(?string $ch): bool
     {
         return $ch === ' ' || $ch === "\t" || $ch === "\n" || $ch === "\r";
     }
 
     /**
-     * @throws InvalidTokenException
+     * Retrieves the next string token from the input stream.
+     *
+     * @throws InvalidTokenException If an invalid token is encountered.
+     * @return Token The string token.
      */
     private function getStringToken(): Token
     {
@@ -122,7 +152,7 @@ final class Lexer
                 break;
             } else if ($isEndOfString) {
                 return $isNowDoc ?
-                    new Token(TokenType::NOWDOC_STRING_VALUE, $str) :
+                    new Token(TokenType::NOWDOC_STRING_VALUE, trim($str)) :
                     new Token(TokenType::STRING_VALUE, $str);
             } else if ($ch !== '\\' || $isNowDoc) {
                 $str .= $ch;
@@ -146,7 +176,10 @@ final class Lexer
     }
 
     /**
-     * @throws InvalidTokenException
+     * Retrieves the next embedded source token from the input stream.
+     *
+     * @throws InvalidTokenException If an invalid token is encountered.
+     * @return Token The embedded source token.
      */
     private function getEmbeddedSourceToken(): Token
     {
@@ -176,7 +209,7 @@ final class Lexer
                 $next = mb_substr($this->currentBuffer, $this->cursorPosition, 2);
                 $isEndOfString = ($next == '``');
                 if($isEndOfString) {
-                    $this->cursorPosition += 3;
+                    $this->cursorPosition += 2;
                 }
             }
 
@@ -192,6 +225,12 @@ final class Lexer
         throw new InvalidTokenException('No end of string');
     }
 
+    /**
+     * Retrieves the next identifier or literal token from the input stream.
+     *
+     * @param string $str The starting character.
+     * @return Token The identifier or literal token.
+     */
     private function getIdentifierOrLiteralToken(string $str): Token
     {
         while (true) {
@@ -204,6 +243,7 @@ final class Lexer
                 || $ch == '-'
                 || 'a' <= $ch && $ch <= 'z'
                 || 'A' <= $ch && $ch <= 'Z'
+                || '0' <= $ch && $ch <= '9'
             ) {
                 $str .= $ch;
             } else {
@@ -221,7 +261,9 @@ final class Lexer
     }
 
     /**
-     * @return Token
+     * Retrieves the next comment token from the input stream.
+     *
+     * @return Token The comment token.
      */
     private function getCommentToken(): Token
     {
@@ -234,12 +276,14 @@ final class Lexer
                 $str .= $ch;
             }
         }
-        return new Token(TokenType::COMMENT, $str);
+        return new Token(TokenType::COMMENT, trim($str));
     }
 
     /**
-     * @param string $ch
-     * @return Token
+     * Retrieves the next number token from the input stream.
+     *
+     * @param string $ch The starting character.
+     * @return Token The number token.
      */
     private function getNumberToken(string $ch): Token
     {
